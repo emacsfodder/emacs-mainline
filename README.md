@@ -5,13 +5,13 @@ authorship of Emacs powerline was unknown.
 
 (Nicolas Rougier posted to powerline.el 1.0.0 to Emacswiki initially.)
 
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-mainline.png)
+
 ## Using mainline.el.
 
 Add a require to .emacs 
 
     (require 'mainline) 
-
-(or install from elpa/marmalade which uses auto-load)
 
 You can customize the separator graphic by setting the customize variable
 
@@ -33,5 +33,3 @@ possible values:
 
 For screenshots of all shapes and additional info see the article at:
 http://emacsfodder.github.com/blog/powerline-enhanced/
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-mainline.png)
