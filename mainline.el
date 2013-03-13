@@ -13,23 +13,13 @@
 ;;;       : - already, so Emacs24 color themes can set them. 
 ;;;
 ;;;   1.0 : forked from powerline 0.0.1 - added additional xpm shapes.
-;;; 
+;;;  
 ;;;
 ;;; Commentary:
 ;;; 
 ;;; This is a fork of powerline.el which I began while the original
-;;; authorship of powerline was unknown, I'll include accreditation to
-;;; the proper author(s), please drop me a line at jasonm23@gmail.com
-;;; and let me know if you have historical information about poweline
-;;; on emacs.
-;;;
-;;; Note: the original version forked from was not credited to Nicolas
-;;; Rougier and Chen Yuan, let me know if this was initially ommitted,
-;;; or if Nicholas and Chen have extended powerline.el from the
-;;; initial version. Thank you.
-;;;
-;;; Additional shapes added:
-;;; chamfer, rounded, slant, slant-left, slant-right
+;;; authorship of powerline was unknown, it turns out this was posted
+;;; by Nicolas Rougier posted to Emacswiki
 ;;;
 ;;; Using mainline.el.
 ;;;
