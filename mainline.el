@@ -35,30 +35,20 @@
 ;;;
 ;;; possible values...
 ;;;
-;;;     chamfer
-;;;
-;;;     chamfer14 (default)
-;;;
-;;;     rounded
-;;;
-;;;     arrow
-;;;
-;;;     arrow-14
-;;;
-;;;     slant
-;;;
-;;;     slant-left
-;;;
-;;;     slant-right;
-;;;
-;;;     half
-;;;
-;;;     percent
-;;;
-;;;     curve
+;;; * chamfer
+;;; * chamfer14 (default)
+;;; * rounded
+;;; * arrow
+;;; * arrow-14
+;;; * slant
+;;; * slant-left
+;;; * slant-right
+;;; * half
+;;; * percent
+;;; * curve
 ;;;
 ;;; For screenshots and additional info see the article at
-;;; http://emacsfodder.github.com/blog/powerline-enhanced/
+;;; emacsfodder.github.com/blog/powerline-enhanced/
 ;;;
 
 (defcustom mainline-color1 "#123550"
