@@ -1,7 +1,7 @@
 ## Commentary:
 
 This is a fork of powerline.el which I began while the original
-authorship of powerline was unknown. 
+authorship of Emacs powerline was unknown. 
 
 (Nicolas Rougier posted to powerline.el 1.0.0 to Emacswiki initially.)
 
