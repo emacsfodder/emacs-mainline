@@ -7,12 +7,7 @@ and let me know if you have historical information about poweline
 on emacs.
 
 Note: the original version forked from was not credited to Nicolas
-Rougier and Chen Yuan, let me know if this was initially ommitted,
-or if Nicholas and Chen have extended powerline.el from the
-initial version. Thank you.
-
-Additional shapes added:
-chamfer, rounded, slant, slant-left, slant-right
+Rougier and Chen Yuan, let me know if this was initially ommitted.
 
 ## Using mainline.el.
 
