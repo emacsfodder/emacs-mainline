@@ -1,9 +1,11 @@
 ;;; main-line.el --- modeline replacement forked from an early version of powerline.el
 ;;;
 ;;; Author: Jason Milkins
-;;; Version: 1.2.1
+;;; Version: 1.2.2
 ;;; Keywords: statusline / modeline
+;;; Url: https://github.com/jasonm23/emacs-mainline
 ;;; Changelog:
+;;; 1.2.2 : using force-mode-line-update instead of redraw-mode-line
 ;;; 1.2.1 : added customize group as child of mode-line
 ;;; 1.2.0 : renamed to main-line
 ;;;       : - main-line-percent-xpm used by default
@@ -29,7 +31,7 @@
 ;;;
 ;;; This is a fork of powerline.el which I began while the original
 ;;; authorship of powerline was unknown,
-;;;;;;
+;;;
 ;;; -- Using main-line.el.
 ;;;
 ;;; Add a require to .emacs / init.el
@@ -39,6 +41,10 @@
 ;;; You can customize the separator graphic by setting the custom variable
 ;;;
 ;;;     main-line-separator-style
+;;;
+;;; e.g.
+;;;
+;;;     (setq main-line-separator-style 'wave)
 ;;;
 ;;; possible values...
 ;;;
@@ -59,12 +65,7 @@
 ;;; - slant
 ;;; - slant-left
 ;;; - slant-right
-;;; - half
 ;;; - curve
-;;;
-;;; For screenshots and additional info see the article at
-;;; emacsfodder.github.com/blog/powerline-enhanced/ - note the article
-;;; refers to the original fork.
 ;;;
 ;;; To customize the modeline - simply override the value of mode-line-format,
 ;;; see the default at the end of the script, as an example.
@@ -79,6 +80,7 @@
 ;;;
 ;;; Note. main-line-percent-xpm requires 18px separators (use
 ;;; main-line-percent with arrow14 or chamfer14)
+;;;
 
 (defgroup main-line nil
   "Alternative mode line formatting with xpm-bitmap separators"
@@ -813,7 +815,7 @@ install the memoized function over the original function."
                                                         ((eq main-line-separator-style 'curve)        'half)
                                                         ((eq main-line-separator-style 'half)         'chamfer)
                                                         (t                                           'chamfer)))
-                                            (redraw-modeline))))
+                                            (force-mode-line-update))))
        ""))))
 
 (defun main-line-make-right
@@ -868,7 +870,7 @@ install the memoized function over the original function."
                                                         ((eq main-line-separator-style 'curve)        'half)
                                                         ((eq main-line-separator-style 'half)         'chamfer)
                                                         (t                                           'chamfer)))
-                                            (redraw-modeline))))
+                                            (force-mode-line-update))))
        "")
      (if arrow
          (propertize " " 'face plface)
@@ -947,7 +949,7 @@ install the memoized function over the original function."
                                       'mouse-1 (lambda () (interactive)
                                                  (setq main-line-buffer-size-suffix
                                                        (not main-line-buffer-size-suffix))
-                                                 (redraw-modeline)))))
+                                                 (force-mode-line-update)))))
 (defmain-line rmw "%*")
 
 (defmain-line major-mode

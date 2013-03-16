@@ -1,35 +1,71 @@
-## Commentary:
-
 This is a fork of powerline.el which I began while the original
-authorship of Emacs powerline was unknown. 
+authorship of powerline was unknown,
 
-(Nicolas Rougier posted to powerline.el 1.0.0 to Emacswiki initially.)
+## Using main-line.el
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-mainline.png)
+Add a require to .emacs / init.el
 
-## Using mainline.el.
+     (require 'main-line)
 
-Add a require to .emacs 
+You can customize the separator graphic by setting the custom variable
 
-    (require 'mainline) 
+     main-line-separator-style
+     
+e.g.
 
-You can customize the separator graphic by setting the customize variable
+     (setq main-line-separator-style 'wave)
 
-    mainline-arrow-shape
+possible values...
 
-possible values:
+- `wave`
+- `zigzag`
+- `butt`
+- `wave-left`
+- `zigzag-left`
+- `butt-left`
+- `wave-right`
+- `zigzag-right`
+- `butt-right`
+- `chamfer`
+- `chamfer14`
+- `rounded`
+- `arrow`
+- `arrow14`
+- `slant`
+- `slant-left`
+- `slant-right`
+- `curve`
 
-    chamfer
-    chamfer14 (default)
-    rounded
-    arrow
-    arrow-14
-    slant
-    slant-left
-    slant-right;
-    half
-    percent
-    curve
+To customize the modeline - simply override the value of mode-line-format,
+see the default at the end of the script, as an example.
 
-For screenshots of all shapes and additional info see the article at:
-http://emacsfodder.github.com/blog/powerline-enhanced/
+You can create your own modeline additions by using the defmain-line macro.
+
+for example,
+
+    (defmain-line row "%4l")
+
+gives you `main-line-row` to use in `mode-line-format`
+
+Note. Using `main-line-percent-xpm` requires 18px separators (use
+`main-line-percent` with `arrow14` or `chamfer14`)
+
+A few examples...
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-wave.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-zigzag.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-butt.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-curve.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-chamfer.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-rounded.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-slant.png)
+
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-arrow.png)
+
+
