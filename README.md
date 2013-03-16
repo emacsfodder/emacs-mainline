@@ -52,20 +52,20 @@ Note. Using `main-line-percent-xpm` requires 18px separators (use
 
 A few examples...
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-wave.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-wave.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-zigzag.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-zigzag.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-butt.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-butt.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-curve.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-curve.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-chamfer.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-chamfer.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-rounded.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-rounded.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-slant.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-slant.png)
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-arrow.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-arrow.png)
 
 
