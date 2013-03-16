@@ -1,5 +1,8 @@
 This is a fork of powerline.el which I began while the original
-authorship of powerline was unknown,
+authorship of powerline was unknown.
+
+- Note: Forked from the original emacs port of vim powerline,
+Powerline.el by Nicolas Rougier
 
 ## Using main-line.el
 
