@@ -1,26 +1,26 @@
-;;; mainline.el --- modeline replacement forked from an early version of powerline.el
+;;; main-line.el --- modeline replacement forked from an early version of powerline.el
 ;;;
 ;;; Author: Jason Milkins
-;;; Version: 1.1.0
-;;;
+;;; Version: 1.2.1
 ;;; Keywords: statusline / modeline
-;;;
 ;;; Changelog:
+;;; 1.2.1 : added customize group as child of mode-line
+;;; 1.2.0 : renamed to main-line
+;;;       : - main-line-percent-xpm used by default
+;;;       : - default style set to wave
 ;;; 1.1.0 : Wave, zigzag and butt separators
-;;;       : - Changed mainline-arrow-shape to mainline-separator-style
+;;;       : - Changed main-line-arrow-shape to main-line-separator-style
 ;;;       : - styles for wave       / zigzag       / butt
 ;;;       : - styles for wave-left  / zigzag-left  / butt-left
 ;;;       : - styles for wave-right / zigzag-right / butt-right
 ;;; 1.0.4 : Fixed custom vars
 ;;; 1.0.3 : Fixed usage instructions
-;;; 1.0.2 : Added to marmalade - documentation updated, renamed to mainline.
-;;;
+;;; 1.0.2 : Added to marmalade - documentation updated, renamed to main-line.
 ;;; 1.0.1 : added additional xpm shape chamfer14, adjusted chamfer xpm.
-;;;       : mainline-color1, mainline-color2, mainline-arrow-shape
+;;;       : main-line-color1, main-line-color2, main-line-arrow-shape
 ;;;       : - are now custom variables, to make them available via customize.
 ;;;       : - they could be set from deftheme: custom-theme-set-variables
 ;;;       : - already, so Emacs24 color themes can set them.
-;;;
 ;;;   1.0 : forked from powerline 0.0.1 - added additional xpm shapes.
 ;;;
 ;;; (forked from the original emacs port of vim powerline > Powerline.el Nicolas Rougier)
@@ -30,15 +30,15 @@
 ;;; This is a fork of powerline.el which I began while the original
 ;;; authorship of powerline was unknown,
 ;;;;;;
-;;; -- Using mainline.el.
+;;; -- Using main-line.el.
 ;;;
 ;;; Add a require to .emacs / init.el
 ;;;
-;;;     (require 'mainline)
+;;;     (require 'main-line)
 ;;;
 ;;; You can customize the separator graphic by setting the custom variable
 ;;;
-;;;     mainline-separator-style
+;;;     main-line-separator-style
 ;;;
 ;;; possible values...
 ;;;
@@ -52,7 +52,7 @@
 ;;; - zigzag-right
 ;;; - butt-right
 ;;; - chamfer
-;;; - chamfer14 (default)
+;;; - chamfer14
 ;;; - rounded
 ;;; - arrow
 ;;; - arrow14
@@ -69,32 +69,38 @@
 ;;; To customize the modeline - simply override the value of mode-line-format,
 ;;; see the default at the end of the script, as an example.
 ;;;
-;;; You can create your own modeline additions by using the defmainline macro.
+;;; You can create your own modeline additions by using the defmain-line macro.
 ;;;
-;;; for example, (defmainline row "%4l") provides mainline-row for use
-;;; in mode-line-format.
+;;; for example,
 ;;;
+;;; (defmain-line row "%4l")
+;;;
+;;; gives you main-line-row to use in mode-line-format
+;;;
+;;; Note. main-line-percent-xpm requires 18px separators (use
+;;; main-line-percent with arrow14 or chamfer14)
 
-(defgroup mainline nil
-  "Alternative mode line formatting with xpm-bitmap separators")
+(defgroup main-line nil
+  "Alternative mode line formatting with xpm-bitmap separators"
+  :group 'mode-line)
 
-(defcustom mainline-color1 "#123550"
+(defcustom main-line-color1 "#123550"
   "Mainline color background 1"
-  :group 'mainline)
+  :group 'main-line)
 
-(defcustom mainline-color2 "#112230"
+(defcustom main-line-color2 "#112230"
   "Mainline color background 2"
-  :group 'mainline)
+  :group 'main-line)
 
-(defcustom mainline-separator-style 'chamfer14
+(defcustom main-line-separator-style 'wave
   "Mainline separator stylename, which can be: wave, zigzag, curve, rounded,
 half, chamfer, slant, slant-left, slant-right, arrow, which are
 all 18px high and chamfer14 and arrow14 which are both 14px high"
-  :group 'mainline)
+  :group 'main-line)
 
-(defvar mainline-minor-modes nil)
+(defvar main-line-minor-modes nil)
 
-(defvar mainline-buffer-size-suffix t
+(defvar main-line-buffer-size-suffix t
   "when set to true buffer size is shown as K/Mb/Gb etc.")
 
 (defun wave-right-xpm
@@ -718,10 +724,10 @@ install the memoized function over the original function."
 (memoize 'half-xpm)
 (memoize 'percent-xpm)
 
-(defun mainline-make-face
+(defun main-line-make-face
   (bg &optional fg)
   (if bg
-      (let ((cface (intern (concat "mainline-"
+      (let ((cface (intern (concat "main-line-"
                                    bg
                                    "-"
                                    (if fg
@@ -744,9 +750,9 @@ install the memoized function over the original function."
         cface)
     nil))
 
-(defun mainline-make-left
+(defun main-line-make-left
   (string color1 &optional color2 localmap)
-  (let ((plface (mainline-make-face color1))
+  (let ((plface (main-line-make-face color1))
         (arrow  (and color2 (not (string= color1 color2)))))
     (concat
      (if (or (not string) (string= string ""))
@@ -763,104 +769,104 @@ install the memoized function over the original function."
      (if arrow
          (propertize " " 'display
                      (cond
-                      ((eq mainline-separator-style 'arrow       ) (arrow-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'slant       ) (slant-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'wave        ) (wave-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'zigzag      ) (zigzag-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'butt        ) (butt-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'chamfer     ) (chamfer-xpm color1 color2))
-                      ((eq mainline-separator-style 'chamfer14   ) (chamfer14-xpm color1 color2))
-                      ((eq mainline-separator-style 'rounded     ) (rounded-xpm color1 color2))
-                      ((eq mainline-separator-style 'slant-left  ) (slant-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'slant-right ) (slant-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'wave-left   ) (wave-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'zigzag-left ) (zigzag-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'butt-left   ) (butt-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'wave-right  ) (wave-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'zigzag-right) (zigzag-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'butt-right  ) (butt-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'arrow14     ) (arrow14-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'curve       ) (curve-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'half        ) (half-xpm color2 color1))
+                      ((eq main-line-separator-style 'arrow       ) (arrow-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant       ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave        ) (wave-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag      ) (zigzag-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt        ) (butt-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer     ) (chamfer-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer14   ) (chamfer14-xpm color1 color2))
+                      ((eq main-line-separator-style 'rounded     ) (rounded-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-left  ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-right ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-left   ) (wave-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-left ) (zigzag-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-left   ) (butt-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-right  ) (wave-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-right) (zigzag-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-right  ) (butt-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'arrow14     ) (arrow14-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'curve       ) (curve-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'half        ) (half-xpm color2 color1))
                       (t
                        (arrow-left-xpm color1 color2)))
                      'local-map (make-mode-line-mouse-map
                                  'mouse-1 (lambda () (interactive)
-                                            (setq mainline-separator-style
-                                                  (cond ((eq mainline-separator-style 'chamfer)      'chamfer14)
-                                                        ((eq mainline-separator-style 'chamfer14)    'rounded)
-                                                        ((eq mainline-separator-style 'rounded)      'zigzag)
-                                                        ((eq mainline-separator-style 'zigzag)       'wave)
-                                                        ((eq mainline-separator-style 'wave)         'butt)
-                                                        ((eq mainline-separator-style 'butt)         'arrow)
-                                                        ((eq mainline-separator-style 'arrow)        'slant)
-                                                        ((eq mainline-separator-style 'slant)        'slant-left)
-                                                        ((eq mainline-separator-style 'slant-left)   'slant-right)
-                                                        ((eq mainline-separator-style 'slant-right)  'wave-left)
-                                                        ((eq mainline-separator-style 'wave-left)    'zigzag-left)
-                                                        ((eq mainline-separator-style 'zigzag-left)  'butt-left)
-                                                        ((eq mainline-separator-style 'butt-left)    'wave-right)
-                                                        ((eq mainline-separator-style 'wave-right)   'zigzag-right)
-                                                        ((eq mainline-separator-style 'zigzag-right) 'butt-right)
-                                                        ((eq mainline-separator-style 'butt-right)   'arrow14)
-                                                        ((eq mainline-separator-style 'arrow14)      'curve)
-                                                        ((eq mainline-separator-style 'curve)        'half)
-                                                        ((eq mainline-separator-style 'half)         'chamfer)
+                                            (setq main-line-separator-style
+                                                  (cond ((eq main-line-separator-style 'chamfer)      'chamfer14)
+                                                        ((eq main-line-separator-style 'chamfer14)    'rounded)
+                                                        ((eq main-line-separator-style 'rounded)      'zigzag)
+                                                        ((eq main-line-separator-style 'zigzag)       'wave)
+                                                        ((eq main-line-separator-style 'wave)         'butt)
+                                                        ((eq main-line-separator-style 'butt)         'arrow)
+                                                        ((eq main-line-separator-style 'arrow)        'slant)
+                                                        ((eq main-line-separator-style 'slant)        'slant-left)
+                                                        ((eq main-line-separator-style 'slant-left)   'slant-right)
+                                                        ((eq main-line-separator-style 'slant-right)  'wave-left)
+                                                        ((eq main-line-separator-style 'wave-left)    'zigzag-left)
+                                                        ((eq main-line-separator-style 'zigzag-left)  'butt-left)
+                                                        ((eq main-line-separator-style 'butt-left)    'wave-right)
+                                                        ((eq main-line-separator-style 'wave-right)   'zigzag-right)
+                                                        ((eq main-line-separator-style 'zigzag-right) 'butt-right)
+                                                        ((eq main-line-separator-style 'butt-right)   'arrow14)
+                                                        ((eq main-line-separator-style 'arrow14)      'curve)
+                                                        ((eq main-line-separator-style 'curve)        'half)
+                                                        ((eq main-line-separator-style 'half)         'chamfer)
                                                         (t                                           'chamfer)))
                                             (redraw-modeline))))
        ""))))
 
-(defun mainline-make-right
+(defun main-line-make-right
   (string color2 &optional color1 localmap)
-  (let ((plface (mainline-make-face color2))
+  (let ((plface (main-line-make-face color2))
         (arrow  (and color1 (not (string= color1 color2)))))
     (concat
      (if arrow
          (propertize " " 'display
                      (cond
-                      ((eq mainline-separator-style 'arrow       ) (arrow-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'slant       ) (slant-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'wave        ) (wave-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'zigzag      ) (zigzag-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'butt        ) (butt-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'rounded     ) (rounded-xpm color1 color2))
-                      ((eq mainline-separator-style 'chamfer     ) (chamfer-xpm color1 color2))
-                      ((eq mainline-separator-style 'chamfer14   ) (chamfer14-xpm color1 color2))
-                      ((eq mainline-separator-style 'slant-left  ) (slant-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'slant-right ) (slant-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'wave-left   ) (wave-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'zigzag-left ) (zigzag-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'butt-left   ) (butt-left-xpm color1 color2))
-                      ((eq mainline-separator-style 'wave-right  ) (wave-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'zigzag-right) (zigzag-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'butt-right  ) (butt-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'arrow14     ) (arrow14-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'curve       ) (curve-right-xpm color1 color2))
-                      ((eq mainline-separator-style 'half        ) (half-xpm color2 color1))
+                      ((eq main-line-separator-style 'arrow       ) (arrow-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant       ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave        ) (wave-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag      ) (zigzag-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt        ) (butt-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'rounded     ) (rounded-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer     ) (chamfer-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer14   ) (chamfer14-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-left  ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-right ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-left   ) (wave-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-left ) (zigzag-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-left   ) (butt-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-right  ) (wave-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-right) (zigzag-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-right  ) (butt-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'arrow14     ) (arrow14-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'curve       ) (curve-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'half        ) (half-xpm color2 color1))
                       (t
                        (arrow-right-xpm color1 color2)))
                      'local-map (make-mode-line-mouse-map
                                  'mouse-1 (lambda () (interactive)
-                                            (setq mainline-separator-style
-                                                  (cond ((eq mainline-separator-style 'chamfer)      'chamfer14)
-                                                        ((eq mainline-separator-style 'chamfer14)    'rounded)
-                                                        ((eq mainline-separator-style 'rounded)      'zigzag)
-                                                        ((eq mainline-separator-style 'zigzag)       'wave)
-                                                        ((eq mainline-separator-style 'wave)         'butt)
-                                                        ((eq mainline-separator-style 'butt)         'arrow)
-                                                        ((eq mainline-separator-style 'arrow)        'slant)
-                                                        ((eq mainline-separator-style 'slant)        'slant-left)
-                                                        ((eq mainline-separator-style 'slant-left)   'slant-right)
-                                                        ((eq mainline-separator-style 'slant-right)  'wave-left)
-                                                        ((eq mainline-separator-style 'wave-left)    'zigzag-left)
-                                                        ((eq mainline-separator-style 'zigzag-left)  'butt-left)
-                                                        ((eq mainline-separator-style 'butt-left)    'wave-right)
-                                                        ((eq mainline-separator-style 'wave-right)   'zigzag-right)
-                                                        ((eq mainline-separator-style 'zigzag-right) 'butt-right)
-                                                        ((eq mainline-separator-style 'butt-right)   'arrow14)
-                                                        ((eq mainline-separator-style 'arrow14)      'curve)
-                                                        ((eq mainline-separator-style 'curve)        'half)
-                                                        ((eq mainline-separator-style 'half)         'chamfer)
+                                            (setq main-line-separator-style
+                                                  (cond ((eq main-line-separator-style 'chamfer)      'chamfer14)
+                                                        ((eq main-line-separator-style 'chamfer14)    'rounded)
+                                                        ((eq main-line-separator-style 'rounded)      'zigzag)
+                                                        ((eq main-line-separator-style 'zigzag)       'wave)
+                                                        ((eq main-line-separator-style 'wave)         'butt)
+                                                        ((eq main-line-separator-style 'butt)         'arrow)
+                                                        ((eq main-line-separator-style 'arrow)        'slant)
+                                                        ((eq main-line-separator-style 'slant)        'slant-left)
+                                                        ((eq main-line-separator-style 'slant-left)   'slant-right)
+                                                        ((eq main-line-separator-style 'slant-right)  'wave-left)
+                                                        ((eq main-line-separator-style 'wave-left)    'zigzag-left)
+                                                        ((eq main-line-separator-style 'zigzag-left)  'butt-left)
+                                                        ((eq main-line-separator-style 'butt-left)    'wave-right)
+                                                        ((eq main-line-separator-style 'wave-right)   'zigzag-right)
+                                                        ((eq main-line-separator-style 'zigzag-right) 'butt-right)
+                                                        ((eq main-line-separator-style 'butt-right)   'arrow14)
+                                                        ((eq main-line-separator-style 'arrow14)      'curve)
+                                                        ((eq main-line-separator-style 'curve)        'half)
+                                                        ((eq main-line-separator-style 'half)         'chamfer)
                                                         (t                                           'chamfer)))
                                             (redraw-modeline))))
        "")
@@ -876,40 +882,40 @@ install the memoized function over the original function."
          ""
        (propertize " " 'face plface)))))
 
-(defun mainline-make-fill
+(defun main-line-make-fill
   (color)
   ;; justify right by filling with spaces to right fringe, 20 should be calculated
-  (let ((plface (mainline-make-face color)))
+  (let ((plface (main-line-make-face color)))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display '((space :align-to (- right-fringe 21)))
                     'face plface)
       (propertize " " 'display '((space :align-to (- right-fringe 24)))
                   'face plface))))
 
-(defun mainline-make-text
+(defun main-line-make-text
   (string color &optional fg localmap)
-  (let ((plface (mainline-make-face color)))
+  (let ((plface (main-line-make-face color)))
     (if string
         (if localmap
             (propertize string 'face plface 'mouse-face plface 'local-map localmap)
           (propertize string 'face plface))
       "")))
 
-(defun mainline-make (side string color1 &optional color2 localmap)
-  (cond ((and (eq side 'right) color2) (mainline-make-right  string color1 color2 localmap))
-        ((and (eq side 'left) color2)  (mainline-make-left   string color1 color2 localmap))
-        ((eq side 'left)               (mainline-make-left   string color1 color1 localmap))
-        ((eq side 'right)              (mainline-make-right  string color1 color1 localmap))
-        (t                             (mainline-make-text   string color1 localmap))))
+(defun main-line-make (side string color1 &optional color2 localmap)
+  (cond ((and (eq side 'right) color2) (main-line-make-right  string color1 color2 localmap))
+        ((and (eq side 'left) color2)  (main-line-make-left   string color1 color2 localmap))
+        ((eq side 'left)               (main-line-make-left   string color1 color1 localmap))
+        ((eq side 'right)              (main-line-make-right  string color1 color1 localmap))
+        (t                             (main-line-make-text   string color1 localmap))))
 
-(defmacro defmainline (name string)
-  `(defun ,(intern (concat "mainline-" (symbol-name name)))
+(defmacro defmain-line (name string)
+  `(defun ,(intern (concat "main-line-" (symbol-name name)))
      (side color1 &optional color2)
-     (mainline-make side
+     (main-line-make side
                     ,string
                     color1 color2)))
 
-(defun mainline-mouse (click-group click-type string)
+(defun main-line-mouse (click-group click-type string)
   (cond ((eq click-group 'minor)
          (cond ((eq click-type 'menu)
                 `(lambda (event)
@@ -928,23 +934,23 @@ install the memoized function over the original function."
             (interactive "@e")
             nil))))
 
-(defmainline arrow       "")
+(defmain-line arrow       "")
 
-(defmainline buffer-id   (propertize (car (propertized-buffer-identification "%12b"))
-                                     'face (mainline-make-face color1)))
+(defmain-line buffer-id   (propertize (car (propertized-buffer-identification "%12b"))
+                                     'face (main-line-make-face color1)))
 
-(defmainline buffer-size (propertize
-                          (if mainline-buffer-size-suffix
+(defmain-line buffer-size (propertize
+                          (if main-line-buffer-size-suffix
                               "%I"
                             "%i")
                           'local-map (make-mode-line-mouse-map
                                       'mouse-1 (lambda () (interactive)
-                                                 (setq mainline-buffer-size-suffix
-                                                       (not mainline-buffer-size-suffix))
+                                                 (setq main-line-buffer-size-suffix
+                                                       (not main-line-buffer-size-suffix))
                                                  (redraw-modeline)))))
-(defmainline rmw "%*")
+(defmain-line rmw "%*")
 
-(defmainline major-mode
+(defmain-line major-mode
   (propertize mode-name
               'help-echo "Major mode\n\ mouse-1: Display major mode menu\n\ mouse-2: Show help for major mode\n\ mouse-3: Toggle minor modes"
               'local-map (let ((map (make-sparse-keymap)))
@@ -955,7 +961,7 @@ install the memoized function over the original function."
                            (define-key map [mode-line down-mouse-3] mode-line-mode-menu)
                            map)))
 
-(defmainline minor-modes
+(defmain-line minor-modes
   (let ((mms (split-string (format-mode-line minor-mode-alist))))
     (apply 'concat
            (mapcar '(lambda (mm)
@@ -964,16 +970,16 @@ install the memoized function over the original function."
                                     (concat " " mm))
                                   'help-echo "Minor mode\n mouse-1: Display minor mode menu\n mouse-2: Show help for minor mode\n mouse-3: Toggle minor modes"
                                   'local-map (let ((map (make-sparse-keymap)))
-                                               (define-key map [mode-line down-mouse-1]   (mainline-mouse 'minor 'menu mm))
-                                               (define-key map [mode-line mouse-2]        (mainline-mouse 'minor 'help mm))
-                                               (define-key map [mode-line down-mouse-3]   (mainline-mouse 'minor 'menu mm))
-                                               (define-key map [header-line down-mouse-3] (mainline-mouse 'minor 'menu mm))
+                                               (define-key map [mode-line down-mouse-1]   (main-line-mouse 'minor 'menu mm))
+                                               (define-key map [mode-line mouse-2]        (main-line-mouse 'minor 'help mm))
+                                               (define-key map [mode-line down-mouse-3]   (main-line-mouse 'minor 'menu mm))
+                                               (define-key map [header-line down-mouse-3] (main-line-mouse 'minor 'menu mm))
                                                map))) mms))))
-(defmainline row "%4l")
-(defmainline column "%3c")
-(defmainline percent "%6p")
+(defmain-line row "%4l")
+(defmain-line column "%3c")
+(defmain-line percent "%6p")
 
-(defmainline narrow (let (real-point-min real-point-max)
+(defmain-line narrow (let (real-point-min real-point-max)
                       (save-excursion
                         (save-restriction
                           (widen)
@@ -984,11 +990,11 @@ install the memoized function over the original function."
                                     'help-echo "mouse-1: Remove narrowing from the current buffer"
                                     'local-map (make-mode-line-mouse-map
                                                 'mouse-1 'mode-line-widen)))))
-(defmainline status      "%s")
-(defmainline emacsclient mode-line-client)
-(defmainline vc vc-mode)
+(defmain-line status      "%s")
+(defmain-line emacsclient mode-line-client)
+(defmain-line vc vc-mode)
 
-(defmainline
+(defmain-line
   percent-xpm
   (propertize "  "
               'display
@@ -1009,19 +1015,19 @@ install the memoized function over the original function."
  mode-line-format
  (list "%e"
        '(:eval (concat
-                (mainline-rmw            'left   nil  )
-                (mainline-buffer-id      'left   nil  mainline-color1  )
-                (mainline-major-mode     'left        mainline-color1  )
-                (mainline-minor-modes    'left        mainline-color1  )
-                (mainline-narrow         'left        mainline-color1   mainline-color2  )
-                (mainline-vc             'center                        mainline-color2  )
-                (mainline-make-fill                                     mainline-color2  )
-                (mainline-row            'right       mainline-color1   mainline-color2  )
-                (mainline-make-text      ":"          mainline-color1  )
-                (mainline-column         'right       mainline-color1  )
-                (mainline-percent-xpm    'right  nil  mainline-color1  )
-                (mainline-make-text      "  "    nil  )))))
+                (main-line-rmw            'left   nil  )
+                (main-line-buffer-id      'left   nil  main-line-color1  )
+                (main-line-major-mode     'left        main-line-color1  )
+                (main-line-minor-modes    'left        main-line-color1  )
+                (main-line-narrow         'left        main-line-color1   main-line-color2  )
+                (main-line-vc             'center                        main-line-color2  )
+                (main-line-make-fill                                     main-line-color2  )
+                (main-line-row            'right       main-line-color1   main-line-color2  )
+                (main-line-make-text      ":"          main-line-color1  )
+                (main-line-column         'right       main-line-color1  )
+                (main-line-percent-xpm    'right  nil  main-line-color1  )
+                (main-line-make-text      "  "    nil  )))))
 
-(provide 'mainline)
+(provide 'main-line)
 
-;;; mainline.el ends here
+;;; main-line.el ends here
