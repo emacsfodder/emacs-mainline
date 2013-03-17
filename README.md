@@ -1,4 +1,4 @@
-<sup>Version 1.2.5</sup>
+### Main-line - v1.2.5
 
 This is a fork of powerline.el which I began while the original
 authorship of powerline was unknown.
