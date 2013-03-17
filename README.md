@@ -12,7 +12,7 @@ Add a require to .emacs / init.el
 
      (require 'main-line)
 
-You can customize the separator graphic by setting the custom variable
+You can customize the separator graphic by setting the custom variable (you can also click the separators to cycle through them)
 
      main-line-separator-style
      
@@ -22,6 +22,12 @@ e.g.
 
 possible values...
 
+- `contour`
+- `contour-left`
+- `contour-right`
+- `roundstub`
+- `roundstub-left`
+- `roundstub-right`
 - `brace`
 - `wave`
 - `zigzag`
