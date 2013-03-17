@@ -1,10 +1,11 @@
 ;;; main-line.el --- modeline replacement forked from an early version of powerline.el
 ;;;
 ;;; Author: Jason Milkins
-;;; Version: 1.2.2
+;;; Version: 1.2.3
 ;;; Keywords: statusline / modeline
 ;;; Url: https://github.com/jasonm23/emacs-mainline
 ;;; Changelog:
+;;; 1.2.3 : added separator style, brace
 ;;; 1.2.2 : using force-mode-line-update instead of redraw-mode-line
 ;;; 1.2.1 : added customize group as child of mode-line
 ;;; 1.2.0 : renamed to main-line
@@ -48,6 +49,7 @@
 ;;;
 ;;; possible values...
 ;;;
+;;; - brace
 ;;; - wave
 ;;; - zigzag
 ;;; - butt
@@ -104,6 +106,71 @@ all 18px high and chamfer14 and arrow14 which are both 14px high"
 
 (defvar main-line-buffer-size-suffix t
   "when set to true buffer size is shown as K/Mb/Gb etc.")
+
+(defun brace-left-xpm
+  (color1 color2)
+  "Return an XPM brace left."
+  (create-image
+   (format "/* XPM */
+static char * brace_left[] = {
+\"12 18 2 1\",
+\"@ c %s\",
+\"  c %s\",
+\"@@          \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@@        \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@        \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@@         \",
+\"@@          \"};"
+           (if color1 color1 "None")
+           (if color2 color2 "None"))
+   'xpm t :ascent 'center))
+
+(defun brace-right-xpm
+  (color1 color2)
+  "Return an XPM brace right."
+  (create-image
+   (format "/* XPM */
+static char * brace_right[] = {
+\"12 18 2 1\",
+\"@ c %s\",
+\"  c %s\",
+\"          @@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"        @@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"        @@@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"          @@\"};"
+           (if color2 color2 "None")
+           (if color1 color1 "None"))
+   'xpm t :ascent 'center))
+
+
+
 
 (defun wave-right-xpm
   (color1 color2)
@@ -706,6 +773,7 @@ install the memoized function over the original function."
              ,val-sym
            (puthash ,args-sym (apply ,func ,args-sym) ,table-sym))))))
 
+(memoize 'brace-left-xpm)
 (memoize 'wave-left-xpm)
 (memoize 'zigzag-left-xpm)
 (memoize 'butt-left-xpm)
@@ -773,6 +841,7 @@ install the memoized function over the original function."
                      (cond
                       ((eq main-line-separator-style 'arrow       ) (arrow-left-xpm color1 color2))
                       ((eq main-line-separator-style 'slant       ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'brace       ) (brace-left-xpm color1 color2))                      
                       ((eq main-line-separator-style 'wave        ) (wave-left-xpm color1 color2))
                       ((eq main-line-separator-style 'zigzag      ) (zigzag-left-xpm color1 color2))
                       ((eq main-line-separator-style 'butt        ) (butt-left-xpm color1 color2))
@@ -796,7 +865,8 @@ install the memoized function over the original function."
                                  'mouse-1 (lambda () (interactive)
                                             (setq main-line-separator-style
                                                   (cond ((eq main-line-separator-style 'chamfer)      'chamfer14)
-                                                        ((eq main-line-separator-style 'chamfer14)    'rounded)
+                                                        ((eq main-line-separator-style 'chamfer14)    'brace)
+                                                        ((eq main-line-separator-style 'brace)        'rounded)                                                        
                                                         ((eq main-line-separator-style 'rounded)      'zigzag)
                                                         ((eq main-line-separator-style 'zigzag)       'wave)
                                                         ((eq main-line-separator-style 'wave)         'butt)
@@ -828,6 +898,7 @@ install the memoized function over the original function."
                      (cond
                       ((eq main-line-separator-style 'arrow       ) (arrow-right-xpm color1 color2))
                       ((eq main-line-separator-style 'slant       ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'brace       ) (brace-right-xpm color1 color2))
                       ((eq main-line-separator-style 'wave        ) (wave-right-xpm color1 color2))
                       ((eq main-line-separator-style 'zigzag      ) (zigzag-right-xpm color1 color2))
                       ((eq main-line-separator-style 'butt        ) (butt-right-xpm color1 color2))
@@ -851,7 +922,8 @@ install the memoized function over the original function."
                                  'mouse-1 (lambda () (interactive)
                                             (setq main-line-separator-style
                                                   (cond ((eq main-line-separator-style 'chamfer)      'chamfer14)
-                                                        ((eq main-line-separator-style 'chamfer14)    'rounded)
+                                                        ((eq main-line-separator-style 'chamfer14)    'brace)
+                                                        ((eq main-line-separator-style 'brace)        'rounded)
                                                         ((eq main-line-separator-style 'rounded)      'zigzag)
                                                         ((eq main-line-separator-style 'zigzag)       'wave)
                                                         ((eq main-line-separator-style 'wave)         'butt)

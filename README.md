@@ -1,3 +1,5 @@
+<sup>Version 1.2.3</sup>
+
 This is a fork of powerline.el which I began while the original
 authorship of powerline was unknown.
 
@@ -20,6 +22,7 @@ e.g.
 
 possible values...
 
+- `brace`
 - `wave`
 - `zigzag`
 - `butt`
