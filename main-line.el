@@ -1,10 +1,12 @@
 ;;; main-line.el --- modeline replacement forked from an early version of powerline.el
 ;;;
 ;;; Author: Jason Milkins
-;;; Version: 1.2.3
+;;; Version: 1.2.5
 ;;; Keywords: statusline / modeline
 ;;; Url: https://github.com/jasonm23/emacs-mainline
 ;;; Changelog:
+;;; 1.2.5 : shrunk percen xpm to 3x14 - added roundstub, roundstub-left, roundstub-right
+;;; 1.2.4 : added separator style, contour, contour-left & contour-right, resized brace to 19px
 ;;; 1.2.3 : added separator style, brace
 ;;; 1.2.2 : using force-mode-line-update instead of redraw-mode-line
 ;;; 1.2.1 : added customize group as child of mode-line
@@ -39,7 +41,10 @@
 ;;;
 ;;;     (require 'main-line)
 ;;;
-;;; You can customize the separator graphic by setting the custom variable
+;;; You can loop through the different separator styles by clicking on
+;;; them (directly on the separator)
+;;;
+;;; Or customize it by setting the custom variable:
 ;;;
 ;;;     main-line-separator-style
 ;;;
@@ -49,6 +54,12 @@
 ;;;
 ;;; possible values...
 ;;;
+;;; - contour
+;;; - contour-left
+;;; - contour-right
+;;; - roundstub
+;;; - roundstub-left
+;;; - roundstub-right
 ;;; - brace
 ;;; - wave
 ;;; - zigzag
@@ -84,6 +95,8 @@
 ;;; main-line-percent with arrow14 or chamfer14)
 ;;;
 
+(require 'cl)
+
 (defgroup main-line nil
   "Alternative mode line formatting with xpm-bitmap separators"
   :group 'mode-line)
@@ -97,9 +110,12 @@
   :group 'main-line)
 
 (defcustom main-line-separator-style 'wave
-  "Mainline separator stylename, which can be: wave, zigzag, curve, rounded,
-half, chamfer, slant, slant-left, slant-right, arrow, which are
-all 18px high and chamfer14 and arrow14 which are both 14px high"
+  " Mainline separator stylename, which can be: wave, zigzag,
+curve, wave-left, zigzag-left, curve-left, wave-right,
+zigzag-right, curve-right, rounded, contour, contour-left,
+contour-right, brace, chamfer, slant, slant-left, slant-right,
+arrow, which are all 18px high, except for chamfer14 and arrow14 which
+are both 14px high, and brace which is 19px high"
   :group 'main-line)
 
 (defvar main-line-minor-modes nil)
@@ -113,7 +129,7 @@ all 18px high and chamfer14 and arrow14 which are both 14px high"
   (create-image
    (format "/* XPM */
 static char * brace_left[] = {
-\"12 18 2 1\",
+\"12 19 2 1\",
 \"@ c %s\",
 \"  c %s\",
 \"@@          \",
@@ -122,12 +138,13 @@ static char * brace_left[] = {
 \"@@@         \",
 \"@@@         \",
 \"@@@         \",
-\"@@@         \",
+\"@@@@        \",
 \"@@@@        \",
 \"@@@@@       \",
+\"@@@@@@      \",
 \"@@@@@       \",
 \"@@@@        \",
-\"@@@         \",
+\"@@@@        \",
 \"@@@         \",
 \"@@@         \",
 \"@@@         \",
@@ -144,7 +161,7 @@ static char * brace_left[] = {
   (create-image
    (format "/* XPM */
 static char * brace_right[] = {
-\"12 18 2 1\",
+\"12 19 2 1\",
 \"@ c %s\",
 \"  c %s\",
 \"          @@\",
@@ -153,17 +170,82 @@ static char * brace_right[] = {
 \"         @@@\",
 \"         @@@\",
 \"         @@@\",
+\"        @@@@\",
+\"        @@@@\",
+\"       @@@@@\",
+\"      @@@@@@\",
+\"       @@@@@\",
+\"        @@@@\",
+\"        @@@@\",
 \"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"         @@@\",
+\"          @@\"};"
+           (if color2 color2 "None")
+           (if color1 color1 "None"))
+   'xpm t :ascent 'center))
+
+
+
+(defun roundstub-left-xpm
+  (color1 color2)
+  "Return an XPM roundstub left."
+  (create-image
+   (format "/* XPM */
+static char * roundstub_left[] = {
+\"12 18 2 1\",
+\"@ c %s\",
+\"  c %s\",
+\"@@          \",
+\"@@@@        \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@        \",
+\"@@          \"};"
+           (if color1 color1 "None")
+           (if color2 color2 "None"))
+   'xpm t :ascent 'center))
+
+(defun roundstub-right-xpm
+  (color1 color2)
+  "Return an XPM roundstub right."
+  (create-image
+   (format "/* XPM */
+static char * roundstub_right[] = {
+\"12 18 2 1\",
+\"@ c %s\",
+\"  c %s\",
+\"          @@\",
 \"        @@@@\",
 \"       @@@@@\",
 \"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
 \"        @@@@\",
-\"         @@@\",
-\"         @@@\",
-\"         @@@\",
-\"         @@@\",
-\"         @@@\",
-\"         @@@\",
 \"          @@\"};"
            (if color2 color2 "None")
            (if color1 color1 "None"))
@@ -449,6 +531,69 @@ static char * rounded[] = {
    'xpm t :ascent 'center))
 
 
+(defun contour-left-xpm
+  (color1 color2)
+  "Return an XPM contour-left string representing."
+  (create-image
+   (format "/* XPM */
+static char * contour_left[] = {
+\"12 18 2 1\",
+\"@ c %s\",
+\"  c %s\",
+\"@           \",
+\"@@@         \",
+\"@@@@        \",
+\"@@@@@       \",
+\"@@@@@       \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@      \",
+\"@@@@@@@     \",
+\"@@@@@@@     \",
+\"@@@@@@@@    \",
+\"@@@@@@@@@   \",
+\"@@@@@@@@@@@ \"};"
+           (if color1 color1 "None")
+           (if color2 color2 "None"))
+   'xpm t :ascent 'center))
+
+(defun contour-right-xpm
+  (color1 color2)
+  "Return an XPM contour-right string representing."
+  (create-image
+   (format "/* XPM */
+static char * contour_right[] = {
+\"12 18 2 1\",
+\"@ c %s\",
+\"  c %s\",
+\"           @\",
+\"         @@@\",
+\"        @@@@\",
+\"       @@@@@\",
+\"       @@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"      @@@@@@\",
+\"     @@@@@@@\",
+\"     @@@@@@@\",
+\"    @@@@@@@@\",
+\"   @@@@@@@@@\",
+\" @@@@@@@@@@@\"};"
+           (if color2 color2 "None")
+           (if color1 color1 "None"))
+   'xpm t :ascent 'center))
+
+
 (defun slant-left-xpm
   (color1 color2)
   "Return an XPM left slant string representing."
@@ -708,12 +853,12 @@ static char * %s[] = {
     (let ((len  (length data))
           (idx  0))
       (apply 'concat
-             (mapcar '(lambda (dl)
+             (mapcar #'(lambda (dl)
                         (setq idx (+ idx 1))
                         (concat
                          "\""
                          (concat
-                          (mapcar '(lambda (d)
+                          (mapcar #'(lambda (d)
                                      (if (eq d 0)
                                          (string-to-char " ")
                                        (string-to-char ".")))
@@ -735,13 +880,13 @@ static char * %s[] = {
   (pmax pmin we ws width color1 color2)
   (let* ((fs (if (eq pmin ws)
                  0
-               (round (* 17 (/ (float ws) (float pmax))))))
+               (round (* 13 (/ (float ws) (float pmax))))))
          (fe (if (eq pmax we)
-                 17
-               (round (* 17 (/ (float we) (float pmax))))))
+                 13
+               (round (* 13 (/ (float we) (float pmax))))))
          (o nil)
          (i 0))
-    (while (< i 18)
+    (while (< i 14)
       (setq o (cons
                (if (and (<= fs i)
                         (<= i fe))
@@ -773,7 +918,12 @@ install the memoized function over the original function."
              ,val-sym
            (puthash ,args-sym (apply ,func ,args-sym) ,table-sym))))))
 
+(memoize 'roundstub-left-xpm)
+(memoize 'roundstub-right-xpm)
 (memoize 'brace-left-xpm)
+(memoize 'brace-right-xpm)
+(memoize 'contour-left-xpm)
+(memoize 'contour-right-xpm)
 (memoize 'wave-left-xpm)
 (memoize 'zigzag-left-xpm)
 (memoize 'butt-left-xpm)
@@ -839,52 +989,62 @@ install the memoized function over the original function."
      (if arrow
          (propertize " " 'display
                      (cond
-                      ((eq main-line-separator-style 'arrow       ) (arrow-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'slant       ) (slant-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'brace       ) (brace-left-xpm color1 color2))                      
-                      ((eq main-line-separator-style 'wave        ) (wave-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'zigzag      ) (zigzag-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'butt        ) (butt-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'chamfer     ) (chamfer-xpm color1 color2))
-                      ((eq main-line-separator-style 'chamfer14   ) (chamfer14-xpm color1 color2))
-                      ((eq main-line-separator-style 'rounded     ) (rounded-xpm color1 color2))
-                      ((eq main-line-separator-style 'slant-left  ) (slant-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'slant-right ) (slant-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'wave-left   ) (wave-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'zigzag-left ) (zigzag-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'butt-left   ) (butt-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'wave-right  ) (wave-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'zigzag-right) (zigzag-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'butt-right  ) (butt-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'arrow14     ) (arrow14-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'curve       ) (curve-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'half        ) (half-xpm color2 color1))
+                      ((eq main-line-separator-style 'arrow           ) (arrow-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant           ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'contour         ) (contour-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'contour-left    ) (contour-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'contour-right   ) (contour-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'roundstub       ) (roundstub-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'roundstub-left  ) (roundstub-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'roundstub-right ) (roundstub-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'brace           ) (brace-left-xpm color1 color2))                      
+                      ((eq main-line-separator-style 'wave            ) (wave-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag          ) (zigzag-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt            ) (butt-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer         ) (chamfer-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer14       ) (chamfer14-xpm color1 color2))
+                      ((eq main-line-separator-style 'rounded         ) (rounded-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-left      ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-right     ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-left       ) (wave-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-left     ) (zigzag-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-left       ) (butt-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-right      ) (wave-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-right    ) (zigzag-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-right      ) (butt-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'arrow14         ) (arrow14-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'curve           ) (curve-left-xpm color1 color2))
                       (t
                        (arrow-left-xpm color1 color2)))
                      'local-map (make-mode-line-mouse-map
                                  'mouse-1 (lambda () (interactive)
                                             (setq main-line-separator-style
-                                                  (cond ((eq main-line-separator-style 'chamfer)      'chamfer14)
-                                                        ((eq main-line-separator-style 'chamfer14)    'brace)
-                                                        ((eq main-line-separator-style 'brace)        'rounded)                                                        
-                                                        ((eq main-line-separator-style 'rounded)      'zigzag)
-                                                        ((eq main-line-separator-style 'zigzag)       'wave)
-                                                        ((eq main-line-separator-style 'wave)         'butt)
-                                                        ((eq main-line-separator-style 'butt)         'arrow)
-                                                        ((eq main-line-separator-style 'arrow)        'slant)
-                                                        ((eq main-line-separator-style 'slant)        'slant-left)
-                                                        ((eq main-line-separator-style 'slant-left)   'slant-right)
-                                                        ((eq main-line-separator-style 'slant-right)  'wave-left)
-                                                        ((eq main-line-separator-style 'wave-left)    'zigzag-left)
-                                                        ((eq main-line-separator-style 'zigzag-left)  'butt-left)
-                                                        ((eq main-line-separator-style 'butt-left)    'wave-right)
-                                                        ((eq main-line-separator-style 'wave-right)   'zigzag-right)
-                                                        ((eq main-line-separator-style 'zigzag-right) 'butt-right)
-                                                        ((eq main-line-separator-style 'butt-right)   'arrow14)
-                                                        ((eq main-line-separator-style 'arrow14)      'curve)
-                                                        ((eq main-line-separator-style 'curve)        'half)
-                                                        ((eq main-line-separator-style 'half)         'chamfer)
-                                                        (t                                           'chamfer)))
+                                                  (cond ((eq main-line-separator-style 'chamfer)         'chamfer14)
+                                                        ((eq main-line-separator-style 'chamfer14)       'brace)
+                                                        ((eq main-line-separator-style 'brace)           'rounded)                                                        
+                                                        ((eq main-line-separator-style 'rounded)         'zigzag)
+                                                        ((eq main-line-separator-style 'zigzag)          'wave)
+                                                        ((eq main-line-separator-style 'wave)            'butt)
+                                                        ((eq main-line-separator-style 'butt)            'arrow)
+                                                        ((eq main-line-separator-style 'arrow)           'contour)
+                                                        ((eq main-line-separator-style 'contour)         'contour-left)
+                                                        ((eq main-line-separator-style 'contour-left)    'contour-right)
+                                                        ((eq main-line-separator-style 'contour-right)   'roundstub)
+                                                        ((eq main-line-separator-style 'roundstub)       'roundstub-left)
+                                                        ((eq main-line-separator-style 'roundstub-left)  'roundstub-right)
+                                                        ((eq main-line-separator-style 'roundstub-right) 'slant)
+                                                        ((eq main-line-separator-style 'slant)           'slant-left)
+                                                        ((eq main-line-separator-style 'slant-left)      'slant-right)
+                                                        ((eq main-line-separator-style 'slant-right)     'wave-left)
+                                                        ((eq main-line-separator-style 'wave-left)       'zigzag-left)
+                                                        ((eq main-line-separator-style 'zigzag-left)     'butt-left)
+                                                        ((eq main-line-separator-style 'butt-left)       'wave-right)
+                                                        ((eq main-line-separator-style 'wave-right)      'zigzag-right)
+                                                        ((eq main-line-separator-style 'zigzag-right)    'butt-right)
+                                                        ((eq main-line-separator-style 'butt-right)      'arrow14)
+                                                        ((eq main-line-separator-style 'arrow14)         'curve)
+                                                        ((eq main-line-separator-style 'curve)           'chamfer)
+                                                        (t                                               'chamfer)))
                                             (force-mode-line-update))))
        ""))))
 
@@ -896,52 +1056,62 @@ install the memoized function over the original function."
      (if arrow
          (propertize " " 'display
                      (cond
-                      ((eq main-line-separator-style 'arrow       ) (arrow-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'slant       ) (slant-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'brace       ) (brace-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'wave        ) (wave-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'zigzag      ) (zigzag-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'butt        ) (butt-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'rounded     ) (rounded-xpm color1 color2))
-                      ((eq main-line-separator-style 'chamfer     ) (chamfer-xpm color1 color2))
-                      ((eq main-line-separator-style 'chamfer14   ) (chamfer14-xpm color1 color2))
-                      ((eq main-line-separator-style 'slant-left  ) (slant-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'slant-right ) (slant-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'wave-left   ) (wave-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'zigzag-left ) (zigzag-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'butt-left   ) (butt-left-xpm color1 color2))
-                      ((eq main-line-separator-style 'wave-right  ) (wave-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'zigzag-right) (zigzag-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'butt-right  ) (butt-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'arrow14     ) (arrow14-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'curve       ) (curve-right-xpm color1 color2))
-                      ((eq main-line-separator-style 'half        ) (half-xpm color2 color1))
+                      ((eq main-line-separator-style 'arrow           ) (arrow-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant           ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'contour         ) (contour-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'contour-left    ) (contour-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'contour-right   ) (contour-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'roundstub       ) (roundstub-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'roundstub-left  ) (roundstub-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'roundstub-right ) (roundstub-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'brace           ) (brace-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave            ) (wave-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag          ) (zigzag-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt            ) (butt-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'rounded         ) (rounded-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer         ) (chamfer-xpm color1 color2))
+                      ((eq main-line-separator-style 'chamfer14       ) (chamfer14-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-left      ) (slant-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'slant-right     ) (slant-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-left       ) (wave-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-left     ) (zigzag-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-left       ) (butt-left-xpm color1 color2))
+                      ((eq main-line-separator-style 'wave-right      ) (wave-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'zigzag-right    ) (zigzag-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'butt-right      ) (butt-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'arrow14         ) (arrow14-right-xpm color1 color2))
+                      ((eq main-line-separator-style 'curve           ) (curve-right-xpm color1 color2))
                       (t
                        (arrow-right-xpm color1 color2)))
                      'local-map (make-mode-line-mouse-map
                                  'mouse-1 (lambda () (interactive)
                                             (setq main-line-separator-style
-                                                  (cond ((eq main-line-separator-style 'chamfer)      'chamfer14)
-                                                        ((eq main-line-separator-style 'chamfer14)    'brace)
-                                                        ((eq main-line-separator-style 'brace)        'rounded)
-                                                        ((eq main-line-separator-style 'rounded)      'zigzag)
-                                                        ((eq main-line-separator-style 'zigzag)       'wave)
-                                                        ((eq main-line-separator-style 'wave)         'butt)
-                                                        ((eq main-line-separator-style 'butt)         'arrow)
-                                                        ((eq main-line-separator-style 'arrow)        'slant)
-                                                        ((eq main-line-separator-style 'slant)        'slant-left)
-                                                        ((eq main-line-separator-style 'slant-left)   'slant-right)
-                                                        ((eq main-line-separator-style 'slant-right)  'wave-left)
-                                                        ((eq main-line-separator-style 'wave-left)    'zigzag-left)
-                                                        ((eq main-line-separator-style 'zigzag-left)  'butt-left)
-                                                        ((eq main-line-separator-style 'butt-left)    'wave-right)
-                                                        ((eq main-line-separator-style 'wave-right)   'zigzag-right)
-                                                        ((eq main-line-separator-style 'zigzag-right) 'butt-right)
-                                                        ((eq main-line-separator-style 'butt-right)   'arrow14)
-                                                        ((eq main-line-separator-style 'arrow14)      'curve)
-                                                        ((eq main-line-separator-style 'curve)        'half)
-                                                        ((eq main-line-separator-style 'half)         'chamfer)
-                                                        (t                                           'chamfer)))
+                                                  (cond ((eq main-line-separator-style 'chamfer)         'chamfer14)
+                                                        ((eq main-line-separator-style 'chamfer14)       'brace)
+                                                        ((eq main-line-separator-style 'brace)           'rounded)
+                                                        ((eq main-line-separator-style 'rounded)         'zigzag)
+                                                        ((eq main-line-separator-style 'zigzag)          'wave)
+                                                        ((eq main-line-separator-style 'wave)            'butt)
+                                                        ((eq main-line-separator-style 'butt)            'arrow)
+                                                        ((eq main-line-separator-style 'arrow)           'contour)
+                                                        ((eq main-line-separator-style 'contour)         'contour-left)
+                                                        ((eq main-line-separator-style 'contour-left)    'contour-right)
+                                                        ((eq main-line-separator-style 'contour-right)   'roundstub)
+                                                        ((eq main-line-separator-style 'roundstub)       'roundstub-left)
+                                                        ((eq main-line-separator-style 'roundstub-left)  'roundstub-right)
+                                                        ((eq main-line-separator-style 'roundstub-right) 'slant)
+                                                        ((eq main-line-separator-style 'slant)           'slant-left)
+                                                        ((eq main-line-separator-style 'slant-left)      'slant-right)
+                                                        ((eq main-line-separator-style 'slant-right)     'wave-left)
+                                                        ((eq main-line-separator-style 'wave-left)       'zigzag-left)
+                                                        ((eq main-line-separator-style 'zigzag-left)     'butt-left)
+                                                        ((eq main-line-separator-style 'butt-left)       'wave-right)
+                                                        ((eq main-line-separator-style 'wave-right)      'zigzag-right)
+                                                        ((eq main-line-separator-style 'zigzag-right)    'butt-right)
+                                                        ((eq main-line-separator-style 'butt-right)      'arrow14)
+                                                        ((eq main-line-separator-style 'arrow14)         'curve)
+                                                        ((eq main-line-separator-style 'curve)           'chamfer)
+                                                        (t                                               'chamfer)))
                                             (force-mode-line-update))))
        "")
      (if arrow
@@ -1038,7 +1208,7 @@ install the memoized function over the original function."
 (defmain-line minor-modes
   (let ((mms (split-string (format-mode-line minor-mode-alist))))
     (apply 'concat
-           (mapcar '(lambda (mm)
+           (mapcar #'(lambda (mm)
                       (propertize (if (string= (car mms) mm)
                                       mm
                                     (concat " " mm))
@@ -1082,7 +1252,7 @@ install the memoized function over the original function."
                   (setq pmin (point-min)))
                 (percent-xpm
                  pmax pmin
-                 we ws 5
+                 we ws 3
                  color1 color2))))
 
 (setq-default
