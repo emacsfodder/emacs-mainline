@@ -64,4 +64,4 @@ Note. Using `main-line-percent-xpm` requires 18px separators (use
 
 Examples
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-examples.png)
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-examples.png)
