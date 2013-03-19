@@ -5,7 +5,7 @@
 ;;; Keywords: statusline / modeline
 ;;; Url: https://github.com/jasonm23/emacs-mainline
 ;;; Changelog:
-;;; 1.2.5 : shrunk percen xpm to 3x14 - added roundstub, roundstub-left, roundstub-right
+;;; 1.2.5 : shrunk percent xpm to 3x14 - added roundstub, roundstub-left, roundstub-right
 ;;; 1.2.4 : added separator style, contour, contour-left & contour-right, resized brace to 19px
 ;;; 1.2.3 : added separator style, brace
 ;;; 1.2.2 : using force-mode-line-update instead of redraw-mode-line

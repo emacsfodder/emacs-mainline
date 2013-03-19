@@ -62,22 +62,6 @@ gives you `main-line-row` to use in `mode-line-format`
 Note. Using `main-line-percent-xpm` requires 18px separators (use
 `main-line-percent` with `arrow14` or `chamfer14`)
 
-A few examples...
+Examples
 
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-wave.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-zigzag.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-butt.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-curve.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-chamfer.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-rounded.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-slant.png)
-
-![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-line-arrow.png)
-
-
+![](https://raw.github.com/jasonm23/emacs-mainline/master/emacs-main-examples.png)
