@@ -1,7 +1,7 @@
 ;;; main-line.el --- modeline replacement forked from an early version of powerline.el
 ;;;
 ;;; Author: Jason Milkins
-;;; Version: 1.2.6
+;;; Version: 1.2.7
 ;;; Keywords: statusline / modeline
 ;;; Url: https://github.com/jasonm23/emacs-mainline
 ;;; Changelog:
