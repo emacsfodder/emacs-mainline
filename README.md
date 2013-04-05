@@ -1,4 +1,4 @@
-### Main-line - v1.2.7
+### Main-line - v1.2.8
 
 This is a fork of powerline.el which I began while the original
 authorship of powerline was unknown.
@@ -6,6 +6,7 @@ authorship of powerline was unknown.
 - Note: Forked from the original emacs port of vim powerline,
 Powerline.el by Nicolas Rougier
 
+**Note:** Mainline is being merged with the other active fork of [Powerline](https://github.com/milkypostman/powerline) - The new separators and serveral new ones have been added already. I will be retiring emacs-mainline in light of this, and 1.2.8 is likely the final release. I suggest you switch over to [Powerline](https://github.com/milkypostman/powerline) if you are using main-line currently.
 ## Using main-line.el
 
 Add a require to .emacs / init.el
