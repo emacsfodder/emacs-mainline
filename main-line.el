@@ -1,10 +1,11 @@
 ;;; main-line.el --- modeline replacement forked from an early version of powerline.el
 ;;;
 ;;; Author: Jason Milkins
-;;; Version: 1.2.7
+;;; Version: 1.2.8
 ;;; Keywords: statusline / modeline
 ;;; Url: https://github.com/jasonm23/emacs-mainline
 ;;; Changelog:
+;;; 1.2.8 : Fixed percent-xpm indicator on Linux
 ;;; 1.2.7 : Added color interpolation to do VERY basic anti-aliasing on xpms, used on curved
 ;;;       : separators, contour, curve, rounded, roundstub, brace, wave
 ;;;       : (inc. left/right variants)
@@ -130,14 +131,23 @@ are both 14px high, and brace which is 19px high"
   "when set to true buffer size is shown as K/Mb/Gb etc.")
 
 (defun interpolate (color1 color2)
-  "Interpolate between two hex colors, they must be supplied as hex colors with leading #"
+  "Interpolate between two hex colors, they must be supplied as
+  hex colors with leading # - Note: this has been implemented
+  independently, there are functions in hexrgb.el that would help
+  this out a bit, but I wanted this to require only cl-lib (which
+  it built in), and nothing else."
   (let* (
          (c1 (replace-regexp-in-string "#" "" color1))
          (c2 (replace-regexp-in-string "#" "" color2)) 
-         (c1r (string-to-number (substring c1 0 2) 16)) (c1b (string-to-number (substring c1 2 4) 16)) (c1g (string-to-number (substring c1 4 6) 16)) 
-         (c2r (string-to-number (substring c2 0 2) 16)) (c2b (string-to-number (substring c2 2 4) 16)) (c2g (string-to-number (substring c2 4 6) 16)) 
-         (red (/ (+ c1r c2r) 2)) (grn (/ (+ c1g c2g) 2)) (blu (/ (+ c1b c2b) 2)))
-
+         (c1r (string-to-number (substring c1 0 2) 16))
+         (c1b (string-to-number (substring c1 2 4) 16))
+         (c1g (string-to-number (substring c1 4 6) 16)) 
+         (c2r (string-to-number (substring c2 0 2) 16))
+         (c2b (string-to-number (substring c2 2 4) 16))
+         (c2g (string-to-number (substring c2 4 6) 16)) 
+         (red (/ (+ c1r c2r) 2))
+         (grn (/ (+ c1g c2g) 2))
+         (blu (/ (+ c1b c2b) 2)))
     (format "#%02X%02X%02X" red grn blu))
   )
 
@@ -898,7 +908,8 @@ static char * curve_left[] = {
 (defun make-xpm
   (name color1 color2 data)
   "Return an XPM image for data"
-  (create-image
+  (let 
+      ((xpm
    (concat
     (format
      "/* XPM */
@@ -923,28 +934,30 @@ static char * %s[] = {
                           (mapcar #'(lambda (d)
                                      (if (eq d 0)
                                          (string-to-char " ")
-                                       (string-to-char ".")))
+                                       (string-to-char "@")))
                                   dl))
                          (if (eq idx len)
                              "\"};"
                            "\",\n")))
-                     data))))
-   'xpm t :ascent 'center))
+                     data))))))
+    (create-image xpm 'xpm t :ascent 'center)))
 
 (defun percent-xpm
-  (pmax pmin we ws width color1 color2)
-  (let* ((fs (if (eq pmin ws)
+  (point_max point_min window_end window_start width color1 color2)
+  "Draw a percent indicator based on the current        
+   window (viewable) position within the buffill_endr"
+  (let* ((fill_start (if (eq point_min window_start)
                  0
-               (round (* 13 (/ (float ws) (float pmax))))))
-         (fe (if (eq pmax we)
+               (round (* 13 (/ (float window_start) (float point_max))))))
+         (fill_end (if (eq point_max window_end)
                  13
-               (round (* 13 (/ (float we) (float pmax))))))
+               (round (* 13 (/ (float window_end) (float point_max))))))
          (o nil)
          (i 0))
     (while (< i 14)
       (setq o (cons
-               (if (and (<= fs i)
-                        (<= i fe))
+               (if (and (<= fill_start i)
+                        (<= i fill_end))
                    (append (list 0) (make-list width 1) (list 0))
                  (append (list 0) (make-list width 0) (list 0)))
                o))
