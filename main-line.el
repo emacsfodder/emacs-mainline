@@ -4,6 +4,7 @@
 ;;; Version: 1.2.8
 ;;; Keywords: statusline / modeline
 ;;; Url: https://github.com/jasonm23/emacs-mainline
+;;; Package-Requires: ((cl-lib "0.5"))
 ;;; Changelog:
 ;;; 1.2.8 : Fixed percent-xpm indicator on Linux
 ;;; 1.2.7 : Added color interpolation to do VERY basic anti-aliasing on xpms, used on curved
@@ -968,15 +969,15 @@ static char * %s[] = {
 (defun memoize (func)
   "Memoize the given function. If argument is a symbol then
 install the memoized function over the original function."
-  (typecase func
+  (cl-typecase func
     (symbol (fset func (memoize-wrap (symbol-function func))) func)
     (function (memoize-wrap func))))
 
 (defun memoize-wrap (func)
   "Return the memoized version of the given function."
-  (let ((table-sym (gensym))
-        (val-sym (gensym))
-        (args-sym (gensym)))
+  (let ((table-sym (cl-gensym))
+        (val-sym (cl-gensym))
+        (args-sym (cl-gensym)))
     (set table-sym (make-hash-table :test 'equal))
     `(lambda (&rest ,args-sym)
        ,(concat (documentation func) "\n(memoized function)")
